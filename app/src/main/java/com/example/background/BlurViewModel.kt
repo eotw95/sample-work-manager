@@ -16,12 +16,14 @@
 
 package com.example.background
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.example.background.workers.BlurWorker
@@ -43,6 +45,20 @@ class BlurViewModel(application: Application) : ViewModel() {
      */
     internal fun applyBlur(blurLevel: Int) {
         workManager.enqueue(OneTimeWorkRequest.from(BlurWorker::class.java))
+    }
+
+    /**
+     * Creates the input data bundle which includes the Uri to operate on
+     * @return Data which contains the Image Uri as a String
+     */
+    @SuppressLint("RestrictedApi")
+    private fun createInputDataForUri(): Data {
+        val builder = Data.Builder()
+        imageUri?.let {
+            builder.putString(KEY_IMAGE_URI, imageUri.toString())
+        }
+
+        return builder.build()
     }
 
     private fun uriOrNull(uriString: String?): Uri? {
@@ -81,3 +97,21 @@ class BlurViewModel(application: Application) : ViewModel() {
         }
     }
 }
+
+/**
+ * URI（Uniform Resource Identifier）とURL（Uniform Resource Locator）は関連するが異なる概念です。
+ *
+ * URI (Uniform Resource Identifier): これは、識別子（Identifier）です。
+ * リソースを一意に特定するための識別子で、URLはURIの一種です。
+ * URIはLocator（場所を示すもの）とName（名前を示すもの）の二つのサブセットに分かれます。URLはLocatorの一例です。
+ * URIは、リソースを識別するための一般的な仕組みを指します。
+ *
+ * URL (Uniform Resource Locator): これはURIの一部で、特定のリソースの場所を示します。
+ * URLは、通常、ウェブ上のリソースのアドレスを指します。例えば、https://www.example.com はURLの一例です。
+ *
+ * 簡潔に言えば、URLはURIの一部で、URIはリソースを識別するための一般的な概念です。
+ * URIにはURLとURN（Uniform Resource Name）が含まれます。URLはリソースの場所を示すためのもので、URNはリソースの名前を示すためのものです。
+ *
+ * このコードの中での Uri は、Androidで使われるURIクラスで、具体的にはリソースへの参照（この場合はDrawableリソース）を表現しています。
+ * URIはリソースの識別子を表すため、このコードではDrawableリソースに対するURIを構築しています。
+ */
