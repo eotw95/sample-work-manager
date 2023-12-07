@@ -13,6 +13,7 @@ class CleanupWorker(ctx: Context, param: WorkerParameters): Worker(ctx, param) {
     }
     override fun doWork(): Result {
         makeStatusNotification("Cleaning up old temporary files", applicationContext)
+        sleep()
 
         return try {
             val outputDir = File(applicationContext.filesDir, OUTPUT_PATH)
