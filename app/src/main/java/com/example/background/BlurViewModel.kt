@@ -46,16 +46,21 @@ class BlurViewModel(application: Application) : ViewModel() {
      * Create the WorkRequest to apply the blur and save the resulting image
      * @param blurLevel The amount to blur the image
      */
+    @SuppressLint("EnqueueWork")
     internal fun applyBlur(blurLevel: Int) {
         var continuation = workManager.beginWith(
             OneTimeWorkRequest.from(CleanupWorker::class.java)
         )
 
-        val blurRequest = OneTimeWorkRequestBuilder<BlurWorker>()
-            .setInputData(createInputDataForUri())
-            .build()
+        for (i in 0 until blurLevel) {
+            val builder = OneTimeWorkRequest.Builder(BlurWorker::class.java)
 
-        continuation = continuation.then(blurRequest)
+            if (i == 0) {
+                builder.setInputData(createInputDataForUri())
+            }
+
+            continuation = continuation.then(builder.build())
+        }
 
         val saveImageRequest = OneTimeWorkRequest.Builder(SaveImageToFileWorker::class.java).build()
 
