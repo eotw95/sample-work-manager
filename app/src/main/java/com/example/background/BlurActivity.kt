@@ -43,17 +43,36 @@ class BlurActivity : AppCompatActivity() {
         viewModel.outputWorkInfos.observe(this, workInfosObserver())
     }
 
-    private fun workInfosObserver(): Observer<List<WorkInfo>> {
-        return Observer { listOfWorkInfo ->
-            if (listOfWorkInfo.isNullOrEmpty()) {
-                return@Observer
-            }
+//    ラムダで記述するのは個人的にわかりずらい
+//    private fun workInfosObserver(): Observer<List<WorkInfo>> {
+//        return Observer { listOfWorkInfo ->
+//            if (listOfWorkInfo.isNullOrEmpty()) {
+//                return@Observer
+//            }
+//
+//            val workInfo = listOfWorkInfo[0]
+//            if (workInfo.state.isFinished) {
+//                showWorkFinished()
+//            } else {
+//                showWorkInProgress()
+//            }
+//        }
+//    }
 
-            val workInfo = listOfWorkInfo[0]
-            if (workInfo.state.isFinished) {
-                showWorkFinished()
-            } else {
-                showWorkInProgress()
+    //ラムダで書かずに以下のように書く
+    private fun workInfosObserver(): Observer<List<WorkInfo>> {
+        return object : Observer<List<WorkInfo>> {
+            override fun onChanged(t: List<WorkInfo>?) {
+                if (t.isNullOrEmpty()) {
+                    return
+                }
+
+                val workInfo = t[0]
+                if (workInfo.state.isFinished) {
+                    showWorkFinished()
+                } else {
+                    showWorkInProgress()
+                }
             }
         }
     }
