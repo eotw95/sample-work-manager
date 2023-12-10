@@ -60,6 +60,7 @@ class BlurActivity : AppCompatActivity() {
 //    }
 
     //ラムダで書かずに以下のように書く
+    // WorkInfoはWorkRequestのstatusを持つオブジェクト
     private fun workInfosObserver(): Observer<List<WorkInfo>> {
         return object : Observer<List<WorkInfo>> {
             override fun onChanged(t: List<WorkInfo>?) {
