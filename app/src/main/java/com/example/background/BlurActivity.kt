@@ -16,6 +16,7 @@
 
 package com.example.background
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -41,6 +42,15 @@ class BlurActivity : AppCompatActivity() {
         binding.goButton.setOnClickListener { viewModel.applyBlur(blurLevel) }
 
         viewModel.outputWorkInfos.observe(this, workInfosObserver())
+
+        binding.seeFileButton.setOnClickListener {
+            viewModel.outputUri?.let {  currentUri ->
+                val actionView = Intent(Intent.ACTION_VIEW, currentUri)
+                actionView.resolveActivity(packageManager)?.run {
+                    startActivity(actionView)
+                }
+            }
+        }
     }
 
 //    ラムダで記述するのは個人的にわかりずらい
