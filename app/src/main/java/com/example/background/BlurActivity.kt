@@ -41,8 +41,6 @@ class BlurActivity : AppCompatActivity() {
 
         binding.goButton.setOnClickListener { viewModel.applyBlur(blurLevel) }
 
-        viewModel.outputWorkInfos.observe(this, workInfosObserver())
-
         binding.seeFileButton.setOnClickListener {
             viewModel.outputUri?.let {  currentUri ->
                 val actionView = Intent(Intent.ACTION_VIEW, currentUri)
@@ -51,6 +49,10 @@ class BlurActivity : AppCompatActivity() {
                 }
             }
         }
+
+        binding.cancelButton.setOnClickListener { viewModel.cancelWork() }
+
+        viewModel.outputWorkInfos.observe(this, workInfosObserver())
     }
 
 //    ラムダで記述するのは個人的にわかりずらい
